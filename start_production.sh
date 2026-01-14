@@ -11,5 +11,5 @@ echo "Starting Gunicorn and Celery..."
 # Start Celery in the background
 celery -A config worker -l info &
 
-# Start Gunicorn in the foreground (keeps the app alive)
+# Start Gunicorn in the foreground 
 gunicorn config.wsgi:application
