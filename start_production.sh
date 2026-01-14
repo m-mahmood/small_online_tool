@@ -1,15 +1,16 @@
 #!/bin/bash
+set -e
 
-# 1. Run Migrations (to ensure DB is up to date)
-echo "Running migrations..."
+# 1. Run Migrations (Database setup)
 python manage.py migrate --noinput
 
-# 2. Start Gunicorn (Web Server) AND Celery Worker at the same time
-# We use '&' to run them in the background
-echo "Starting Gunicorn and Celery..."
+# 2. Collect Static Files (Images/CSS)
+python manage.py collectstatic --noinput
 
-# Start Celery in the background
-celery -A config worker -l info &
+# 3. Start Celery (Background Task) using Detach
+# The '--detach' flag stops Celery from taking over the console immediately
+celery -A config worker -l info --detach || echo "Celery start failed, continuing..."
 
-# Start Gunicorn in the foreground 
+# 4. Start Gunicorn (Web Server) in the Foreground
+# This keeps the app "alive" for Render
 gunicorn config.wsgi:application
