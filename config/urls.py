@@ -29,7 +29,7 @@ def ads_txt_view(request):
 # =============================================================================
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('adminrizq359yxnbp/', admin.site.urls),
     path('tinymce/', include('tinymce.urls')),
     
     # ADS.TXT (Placed here to ensure it is accessible at the root domain.com/ads.txt)
@@ -37,12 +37,15 @@ urlpatterns = [
     
     # App Includes
     path('', include('pages.urls')),
-    path('grass/', include('grass_calc.urls')),
-    path('bark/', include('bark_calc.urls')),
-    path('tons/', include('tons_calc.urls')),
     path('blog/', include('blog.urls')),
     path('contact/', include('contact.urls')),
     path('popups/', include('popups.urls')),
+
+    # Tool Endpoints
+    path('artificial-grass-calculator/', include('grass_calc.urls')),
+    path('bark-calculator/', include('bark_calc.urls')),
+    path('tons-to-yards-calculator/', include('tons_calc.urls')),
+
 ]
 
 # Static/Media serving
