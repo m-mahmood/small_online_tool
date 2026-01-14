@@ -1,0 +1,42 @@
+<!-- Modal Wrapper -->
+<div class="modal fade" id="exitIntentModal" tabindex="-1" aria-labelledby="exitIntentModalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-t-4 border-yellow-400">
+      <!-- Header -->
+      <div class="modal-header bg-yellow-50 border-b border-yellow-100">
+        <h5 class="modal-title text-gray-800 font-bold text-xl" id="exitIntentModalLabel">
+            Wait! Don't Miss Out
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <!-- Body -->
+      <div class="modal-body p-6">
+        <p class="text-gray-600 mb-4">
+            We noticed you're leaving! Join our newsletter to get weekly calculator tips and exclusive offers.
+        </p>
+
+        <form id="exit-intent-form" action="/popups/process-subscription/" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="popup_id" value="exit_intent">
+            
+            <div class="mb-3">
+                <input type="text" name="name" class="form-control bg-gray-50 border-gray-300" placeholder="Your Name (Optional)">
+            </div>
+            
+            <div class="mb-3">
+                <input type="email" name="email" class="form-control" placeholder="Your Email Address" required>
+            </div>
+
+            <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 rounded shadow transition">
+                Subscribe Now
+            </button>
+        </form>
+        
+        <p class="text-xs text-gray-400 text-center mt-3">
+            No spam, unsubscribe at any time.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

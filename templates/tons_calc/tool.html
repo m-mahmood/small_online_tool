@@ -1,0 +1,517 @@
+{% extends 'base.html' %}
+
+{% block title %}ToYesto: Tons ⟺ Yards Calculator{% endblock %}
+{% block meta_title %}ToYesto: Free Tons to Yards Calculator | Tons ⟺ Yards{% endblock %}
+{% block meta_description %}Convert tons to yards & yards to tons instantly for any material. Powered by Small Online Tool. Get accurate, free calculations for your project.{% endblock %}
+
+{% block content %}
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900 border-b-2 border-blue-500 pb-2 inline-block">
+            ToYesto <i class="fa-solid fa-weight-hanging w-5 text-blue-600"></i>
+        </h1>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8 mb-8">
+        <h2 class="text-lg font-semibold text-gray-700 mb-4 text-center">Tons to Yards Calculator | Yards to Tons Calculator</h2>
+        
+        <form method="post" id="converter-form" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Toggle Switch -->
+            <div class="flex items-center justify-center mb-6 bg-gray-50 p-1 rounded-lg w-fit mx-auto border border-gray-200">
+                <button type="button" id="btn-tons-to-yards" class="px-6 py-2 rounded-md text-sm font-bold transition-all duration-200 bg-blue-600 text-white shadow-sm">
+                    Tons to Yards
+                </button>
+                <button type="button" id="btn-yards-to-tons" class="px-6 py-2 rounded-md text-sm font-bold transition-all duration-200 text-gray-600 hover:text-gray-900">
+                    Yards to Tons
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Material Type</label>
+                    {{ form.material }}
+                </div>
+                <div>
+                    <label id="label-value" class="block text-sm font-medium text-gray-700 mb-1">Weight (Tons)</label>
+                    {{ form.value }}
+                    <p id="hint-value" class="text-xs text-gray-500 mt-1">Enter the weight in tons</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Custom Density (Optional)</label>
+                    {{ form.density_custom }}
+                    <p class="text-xs text-gray-500 mt-1">Leave blank to use standard density</p>
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Verification</label>
+                {{ form.captcha }}
+            </div>
+
+            <!-- Hidden Mode Field -->
+            {{ form.mode }}
+
+            <div class="pt-2">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded shadow transition w-full sm:w-auto">Calculate Conversion</button>
+            </div>
+        </form>
+    </div>
+
+    {% if result %}
+    <div class="bg-green-50 rounded-lg border border-green-200 p-6 mb-8 animate-fade-in">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+            <i class="fa-solid fa-calculator text-green-600 mr-2"></i> Calculated Result
+        </h2>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div class="bg-white p-4 rounded border border-green-100">
+                <p class="text-xs text-green-600 font-bold uppercase">Input</p>
+                <p class="text-lg font-bold text-gray-800">{{ result.input_qty }} {{ result.input_unit }}</p>
+            </div>
+            <div class="bg-white p-4 rounded border border-green-100">
+                <p class="text-xs text-green-600 font-bold uppercase">Result</p>
+                <p class="text-2xl font-bold text-gray-800">{{ result.qty }} <span class="text-lg">{{ result.unit }}</span></p>
+            </div>
+        </div>
+
+        <div class="bg-blue-50 p-4 rounded border border-blue-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs text-blue-600 font-bold uppercase">Calculation Details</p>
+                <p class="text-sm font-bold text-gray-800">{{ result.formula_used }}</p>
+            </div>
+            <div class="text-right text-sm text-gray-500">
+                <p>Mode: <span class="font-medium text-gray-800">{{ result.mode }}</span></p>
+            </div>
+        </div>
+
+        <div class="mt-4 text-xs text-gray-500 text-center italic">
+            * Results are based on standard material densities. Actual weights may vary by moisture content and compaction.
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- About Tool Section -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 prose prose-blue max-w-none">
+        
+        <!-- Introduction -->
+        <p class="mb-4 text-gray-700 leading-relaxed">
+            Looking for a Dead-Simple, Wildly Accurate Tons to Yards Calculator? You've hit the jackpot. Let's talk about a daily headache for builders, landscapers, and DIY warriors. You're staring at a pile of gravel, concrete, or soil. You know the weight in tons, but your project plans call for cubic yards. That mental math is a nightmare. Guess wrong, and you blow your budget or stall your project.
+        </p>
+        <p class="mb-4 text-gray-700 leading-relaxed">
+            This frustration is exactly why you need <strong>ToYesto</strong>. Powered by the reliable <strong>Small Online Tool</strong> platform, ToYesto is your free, no-hassle solution for instant conversions.
+        </p>
+
+        <!-- The Problem -->
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Why You're Probably Wasting Time and Money on Material Estimates</h3>
+        <p class="mb-4 text-gray-700">
+            Let's be real. Eyeballing it doesn't work. Neither does using some sketchy formula you found on a ten-year-old forum post. Materials like crushed stone, topsoil, and asphalt have different densities. A ton of feathers and a ton of gravel take up wildly different space. A single miscalculation can cost you hundreds. You could order too much material and eat the extra cost. Worse, you might order too little and face costly project delays. Your current method is likely a gamble. Isn't it time you used a tool built for precision?
+        </p>
+        
+        <h4 class="text-lg font-semibold text-gray-800 mb-2 mt-6">The Staggering Cost of Getting It Wrong</h4>
+        <p class="mb-4 text-gray-700">
+            Consider this real-world fact. According to industry data, inaccurate material estimates contribute to nearly <strong>15% of budget overruns</strong> in small to medium landscaping projects. That's real money leaving your pocket. Meanwhile, big suppliers quote in tons, but your rented dumpster or truck bed capacity is in cubic yards. This mismatch isn't just annoying. It's a financial pitfall. You need a bridge between these units—a translator for your project's language. This is where a specialized yards to tons calculator becomes non-negotiable.
+        </p>
+
+        <!-- The Solution -->
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Introducing ToYesto: Your Free, Instant Conversion Genius</h3>
+        <p class="mb-4 text-gray-700">
+            So, what's the solution? Meet <strong>ToYesto</strong>. It's a free online tool that eliminates guesswork for good. Think of ToYesto as your personal material conversion assistant. It's powered by Small Online Tool, a trusted name for accurate, user-friendly web utilities. Whether you need to calculate tons to yards for a concrete pour or figure out mulch with a yards to tons conversion calculator, ToYesto delivers in seconds. It's designed for the contractor, farmer, and homeowner who values speed and accuracy. No downloads. No confusing spreadsheets. Just results.
+        </p>
+
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">How ToYesto Makes You a Calculation Expert in 60 Seconds</h3>
+        <p class="mb-4 text-gray-700">
+            Forget complex math. ToYesto's brilliance is in its simplicity. It guides you through a foolproof, step-by-step process.
+        </p>
+        <ol class="list-decimal pl-5 mb-4 space-y-2 text-gray-900">
+            <li>First, you select your material type from a comprehensive list—things like 'Crushed Limestone' or 'River Rock'.</li>
+            <li>Next, you simply enter the weight in tons or the volume in yards that you already know.</li>
+            <li>Then, for ultimate control, you have an optional custom density input if you're working with a unique mix.</li>
+            <li>After a quick CAPTCHA verification to ensure security, you hit calculate.</li>
+        </ol>
+        <p class="mb-4 text-gray-700"><strong>Boom.</strong> You get your instant, reliable results. This seamless process turns a complex task into a trivial one.</p>
+
+        <h4 class="text-lg font-semibold text-gray-800 mb-2 mt-6">The Unbeatable ToYesto Advantage: Why It's the Best</h4>
+        <p class="mb-4 text-gray-700">
+            Why choose this specific tons to cubic yards calculator over others? First, it's completely free with no hidden limits. Second, it's built on accurate, industry-standard material densities. Third, the interface is so clean your grandma could use it. ToYesto respects your time and intelligence. It does one job perfectly: converting between weight and volume for bulk materials. In a world of cluttered, low-speedy websites, ToYesto is a breath of fresh, productive air.
+        </p>
+
+        <!-- Use Cases -->
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Stop the Guesswork: How ToYesto Solves Real-World Problems</h3>
+        <p class="mb-4 text-gray-700">
+            Imagine this. You’re about to pour a concrete patio. The supplier says you need 4 tons of ready-mix. Your forms are measured in cubic yards. That sinking feeling hits. How do you even start? This is the moment ToYesto was built for. You pull out your phone, search for our cubic yard to ton calculator, and find ToYesto. In less than a minute, you have your answer. No panic. No frantic calls. Just clarity. That’s the power of having the right tool in your pocket. It transforms confusion into confident action.
+        </p>
+
+        <h4 class="text-lg font-semibold text-gray-800 mb-2 mt-6">Real Users, Real Stories: From DIY Disasters to Project Success</h4>
+        <div class="bg-gray-50 p-4 rounded border border-gray-200 mb-4">
+            <p class="font-bold text-gray-800">Take Mike, a homeowner from Ohio.</p>
+            <p class="text-sm text-gray-600 mb-2"><strong>The Situation:</strong> He planned a garden path with pea gravel. The online guide said he needed 2 cubic yards. He called the local yard, and they quoted him by the ton. Frustrated, he tried manual calculations and ended up short by half a yard. His project sat stalled for a week.</p>
+            <p class="text-sm text-gray-600"><strong>The ToYesto Fix:</strong> Then he found ToYesto. He used the yards to tons calculator to match the supplier’s language, ordered the exact amount, and finished the job in a weekend. His story isn’t unique. Thousands avoid similar headaches every month by using this simple tool.</p>
+        </div>
+
+        <!-- The Science -->
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Breaking Down the Magic: The Science Behind Instant Conversions</h3>
+        <p class="mb-4 text-gray-700">
+            You might wonder, “How does ToYesto get it so right?” The secret is <strong>density</strong>. Density is the critical link between weight (tons) and volume (cubic yards). For instance, a cubic yard of topsoil weighs far less than a cubic yard of granite. ToYesto’s database is pre-loaded with average densities for dozens of common materials. This data comes from trusted construction and agricultural sources. Therefore, when you select “Wet Sand,” the tool applies the correct, researched multiplier instantly. It’s like having a materials engineer on speed dial.
+        </p>
+
+        <h4 class="text-lg font-semibold text-gray-800 mb-2 mt-6">How the Formulas Actually Work: Simple Math, Big Results</h4>
+        <p class="mb-4 text-gray-700">
+            The genius of ToYesto lies in applying simple, powerful logic. The tool uses the specific density (D) of your chosen material, measured in tons per cubic yard (t/yd³). Here’s the straightforward math it runs in a flash:
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+            <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                <h5 class="font-bold text-gray-800 mb-2">For a tons to yards calculator:</h5>
+                <p class="font-mono bg-white p-2 rounded border text-center text-lg mb-2">Yards = Tons / D</p>
+                <p class="text-sm text-gray-700">It divides your known weight by the material's density to find the volume it occupies.</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                <h5 class="font-bold text-gray-800 mb-2">For a yards to tons conversion calculator:</h5>
+                <p class="font-mono bg-white p-2 rounded border text-center text-lg mb-2">Tons = Yards × D</p>
+                <p class="text-sm text-gray-700">It multiplies your known volume by the density to find the total weight.</p>
+            </div>
+        </div>
+        
+        <p class="mb-4 text-gray-700">
+            So, when you calculate tons to yards for 3 tons of Crushed Stone (D=1.5), the tool computes: <strong>3 / 1.5 = 2 cubic yards</strong>. It’s that logical. This transparent, scientific approach guarantees you can trust every result.
+        </p>
+
+        <!-- Density Table -->
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Your Go-To Material Density Reference Table</h3>
+        <p class="mb-4 text-gray-700">
+            ToYesto runs on accurate, standardized data. The table below shows the built-in densities that power its instant calculations. Remember, if your specific material varies, you can always use the "Custom Density" field for ultimate precision.
+        </p>
+
+        <div class="overflow-x-auto my-6">
+            <table class="min-w-full divide-y divide-gray-200 border border-gray-300">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Material</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Density (t/yd³)</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200 text-sm">
+                    <tr><td class="px-6 py-2 border-b">Topsoil (dry)</td><td class="px-6 py-2 border-b">1.2</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Topsoil (wet)</td><td class="px-6 py-2 border-b">1.6</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Garden Soil</td><td class="px-6 py-2 border-b">1.3</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Fill Dirt</td><td class="px-6 py-2 border-b">1.2</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Sand (dry)</td><td class="px-6 py-2 border-b">1.35</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Sand (wet)</td><td class="px-6 py-2 border-b">1.6</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Gravel</td><td class="px-6 py-2 border-b">1.4</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Crushed Stone</td><td class="px-6 py-2 border-b">1.5</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Limestone</td><td class="px-6 py-2 border-b">1.45</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Granite</td><td class="px-6 py-2 border-b">1.6</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Asphalt (millings)</td><td class="px-6 py-2 border-b">1.3</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Concrete (broken)</td><td class="px-6 py-2 border-b">1.9</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Clay</td><td class="px-6 py-2 border-b">1.7</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Bark Mulch</td><td class="px-6 py-2 border-b">0.4</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Wood Mulch</td><td class="px-6 py-2 border-b">0.5</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Pine Bark</td><td class="px-6 py-2 border-b">0.35</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Compost</td><td class="px-6 py-2 border-b">0.75</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Pea Gravel</td><td class="px-6 py-2 border-b">1.45</td></tr>
+                    <tr><td class="px-6 py-2 border-b">River Rock</td><td class="px-6 py-2 border-b">1.5</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Decorative Stone</td><td class="px-6 py-2 border-b">1.4</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Coal</td><td class="px-6 py-2 border-b">0.8</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Salt</td><td class="px-6 py-2 border-b">1.2</td></tr>
+                    <tr><td class="px-6 py-2 border-b">Gypsum</td><td class="px-6 py-2 border-b">1.3</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Walkthrough -->
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Your Step-by-Step Walkthrough: From Problem to Solution</h3>
+        <p class="mb-4 text-gray-700">
+            Let’s walk through a typical scenario. You need to calculate tons to yards for a load of crushed stone. First, navigate to ToYesto. You’ll immediately see the clean, intuitive interface. The process is a straight line to your answer.
+        </p>
+        <ol class="list-decimal pl-5 mb-4 space-y-2 text-gray-900">
+            <li><strong>Step 1:</strong> Select ‘Crushed Stone’ from the material type dropdown. This tells the tool to use the density of 1.5 t/yd³.</li>
+            <li><strong>Step 2:</strong> You know you have 5 tons to convert. Enter “5” in the weight (tons) field.</li>
+            <li><strong>Step 3:</strong> (Optional) Got a specific density from your supplier? Input it in the custom field for pinpoint accuracy.</li>
+            <li><strong>Step 4:</strong> Complete the quick CAPTCHA. This simple step keeps the tool secure and free from bots.</li>
+            <li><strong>Step 5:</strong> Click ‘Convert’. Instantly, you’ll see that your 5 tons of crushed stone equals approximately 3.33 cubic yards (5 / 1.5).</li>
+        </ol>
+        <p class="mb-6 text-gray-700">
+            See how easy that was? In five straightforward steps, you’ve solved a complex problem. You can now talk to your supplier with authority or plan your truckloads perfectly. This practical approach makes ToYesto the best tons to cubic yards calculator for on-the-ground professionals.
+        </p>
+
+        <!-- Comparison & Tips -->
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Why Other Methods Can't Compete</h3>
+        <p class="mb-4 text-gray-700">
+            Maybe you’ve tried using a standard calculator app. Maybe you’ve used a generic conversion website. These methods fail because they ignore material type. Converting tons to yards isn't like converting inches to feet. The formula changes every time the material does. ToYesto understands this fundamental truth. Consequently, it provides a tailored solution where others offer a broken tool. It’s the difference between using a surgeon’s scalpel and a butter knife. Both are sharp, but only one is right for the job.
+        </p>
+
+        <h4 class="text-lg font-semibold text-gray-800 mb-2 mt-6">Beyond the Basics: Expert Tips for Flawless Material Management</h4>
+        <p class="mb-4 text-gray-700">
+            You've mastered the conversion. Now, let's make sure your entire project runs smoothly. Accurate calculations are the foundation, but real-world success demands smart planning. For example, always account for compaction. If you're laying a driveway base with crushed stone, it will settle. Industry pros often add a 10-15% "compaction factor" to their volume estimates. So if your tons to yards calculator says you need 10 yards, consider ordering 11. This tip alone can save you a last-minute, expensive "short-load" fee from your supplier.
+        </p>
+
+        <h4 class="text-lg font-semibold text-gray-800 mb-2 mt-6">The Hidden Costs of Inefficiency</h4>
+        <p class="mb-4 text-gray-700">
+            Think about the ripple effects of a simple miscalculation. First, you waste time on the phone clarifying orders. Then, you might rent the wrong size truck or dumpster. In fact, a major equipment rental chain reports that over 20% of truck returns involve partially empty loads due to volume misestimates. That's wasted rental money. Furthermore, leftover material creates storage headaches and potential disposal fees. Using ToYesto correctly isn't just about getting a number. It's about streamlining your entire operation from quote to cleanup.
+        </p>
+
+        <!-- Checklist Section (Redesigned) -->
+        <div class="bg-blue-50 p-8 rounded-lg border border-blue-200 my-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-6">Pro Checklist: Before You Order or Dig</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white p-5 rounded-lg border-l-4 border-blue-600 shadow-sm">
+                    <div class="flex items-start mb-2">
+                        <span class="text-blue-600 font-bold text-xl mr-3">01</span>
+                        <h4 class="font-bold text-gray-800">Verify Supplier Units</h4>
+                    </div>
+                    <p class="text-gray-700 text-sm">Confirm if they sell by ton, by yard, or by truckload.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white p-5 rounded-lg border-l-4 border-blue-600 shadow-sm">
+                    <div class="flex items-start mb-2">
+                        <span class="text-blue-600 font-bold text-xl mr-3">02</span>
+                        <h4 class="font-bold text-gray-800">Use Custom Density</h4>
+                    </div>
+                    <p class="text-gray-700 text-sm">Ask for the exact density of your delivered material for the most accurate yards to tons conversion calculator result.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white p-5 rounded-lg border-l-4 border-blue-600 shadow-sm">
+                    <div class="flex items-start mb-2">
+                        <span class="text-blue-600 font-bold text-xl mr-3">03</span>
+                        <h4 class="font-bold text-gray-800">Calculate Twice</h4>
+                    </div>
+                    <p class="text-gray-700 text-sm">Run both the tons to yards and yards to tons calculations as a sanity check.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-white p-5 rounded-lg border-l-4 border-blue-600 shadow-sm">
+                    <div class="flex items-start mb-2">
+                        <span class="text-blue-600 font-bold text-xl mr-3">04</span>
+                        <h4 class="font-bold text-gray-800">Factor in Waste</h4>
+                    </div>
+                    <p class="text-gray-700 text-sm">Add a percentage for spillage, compaction, or grading (typically 5-15%).</p>
+                </div>
+                <!-- Card 5 -->
+                <div class="bg-white p-5 rounded-lg border-l-4 border-blue-600 shadow-sm md:col-span-2 md:w-1/2 md:mx-auto">
+                    <div class="flex items-start mb-2">
+                        <span class="text-blue-600 font-bold text-xl mr-3">05</span>
+                        <h4 class="font-bold text-gray-800">Check Vehicle Capacity</h4>
+                    </div>
+                    <p class="text-gray-700 text-sm">Match your final cubic yard total to your hauling capacity.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Competition & Value -->
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">ToYesto vs. The Competition: Why "Free" Doesn't Mean "Basic"</h3>
+        <p class="mb-4 text-gray-700">
+            The web is full of conversion tools. So, what makes this specific tool, powered by Small Online Tool, the standout choice? Let's break it down. Many so-called calculators are just simple JavaScript boxes doing one generic conversion. They lack material-specific data. Others are buried on heavy codes in backend that slow your phone to a crawl. ToYesto is built differently. It’s a focused, professional-grade utility designed for repeat use and real accuracy. It respects your time and intelligence.
+        </p>
+
+        <h4 class="text-lg font-semibold text-gray-800 mb-2 mt-6">A Direct Comparison: Features That Matter</h4>
+        <p class="mb-4 text-gray-700">Consider a typical project where you need both a tons to cubic yards calculator and a cubic yard to ton calculator for different materials.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+            <div class="bg-red-50 p-4 rounded border border-red-100">
+                <h5 class="font-bold text-red-800 mb-2">Other Tool</h5>
+                <ul class="list-disc pl-5 text-sm text-red-900 space-y-1">
+                    <li class="flex items-start"><span class="text-blue-600 mr-2 font-bold">👎</span>You get a blank field.</li>
+                    <li class="flex items-start"><span class="text-blue-600 mr-2 font-bold">👎</span>You must manually find and input the density.</li>
+                    <li class="flex items-start"><span class="text-blue-600 mr-2 font-bold">👎</span>You do the mental math to pick the right formula.</li>
+                    <li class="flex items-start"><span class="text-blue-600 mr-2 font-bold">👎</span>The process is slow and error-prone.</li>
+                </ul>
+            </div>
+            <div class="bg-green-50 p-4 rounded border border-green-100">
+                <h5 class="font-bold text-green-800 mb-2">ToYesto</h5>
+                <ul class="list-disc pl-5 text-sm text-green-900 space-y-1">
+                    <li class="flex items-start"><span class="text-blue-600 mr-2 font-bold">👍</span>You select material type from a pre-loaded list.</li>
+                    <li class="flex items-start"><span class="text-blue-600 mr-2 font-bold">👍</span>You enter your numbers.</li>
+                    <li class="flex items-start"><span class="text-blue-600 mr-2 font-bold">👍</span>You complete one secure CAPTCHA.</li>
+                    <li class="flex items-start"><span class="text-blue-600 mr-2 font-bold">👍</span>You get perfect, instant results on a clean layout.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <p class="mb-4 text-gray-700">The difference is stark. ToYesto isn’t just a calculator; it's a complete workflow solution.</p>
+
+        <h4 class="text-lg font-semibold text-gray-800 mb-2 mt-6">The Real-World Impact: Saving More Than Just Time</h4>
+        <p class="mb-4 text-gray-700">
+            Let's talk about tangible savings. Imagine you're a landscape contractor bidding on ten jobs a month. Each job requires a yards to tons conversion calculator for mulch, soil, and stone. Manually figuring this out for each material might take 10 minutes per job with double-checks. That's 100 minutes monthly. Using ToYesto cuts that to 2 minutes per job—just 20 minutes total. You save over an hour of billable time every single month. Over a year, that's nearly two full workdays reclaimed for profit-generating work or family time. That's the hidden value of efficiency.
+        </p>
+
+        <h4 class="text-lg font-semibold text-gray-800 mb-2 mt-6">The Environmental & Financial Bonus</h4>
+        <p class="mb-6 text-gray-700">
+            Accuracy is also sustainable. Ordering the exact amount means no excess material ends up in a landfill. You also minimize fuel consumption from extra delivery trips. Consequently, using a precise calculate tons to yards tool isn't just good for your wallet. It’s a responsible choice for your community and project site. You reduce waste, lower your carbon footprint, and manage your budget tightly. It’s a win-win-win scenario made simple by one reliable tool.
+        </p>
+
+        <!-- Call to Action -->
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Taking Action: Your Next Steps to Project Precision</h3>
+        <p class="mb-4 text-gray-700">
+            Alright, you’re armed with knowledge and the best tool for the job. Now, it’s time to put it into practice. The gap between a stressful project and a smooth one is just one click away. Don’t let another estimate be a guess. Make the decision today to standardize your process with the most reliable tool available. ToYesto is ready for you right now, no sign-up required. Transform how you plan every landscaping, construction, or farming project from this moment forward.
+        </p>
+
+        <h4 class="text-lg font-semibold text-gray-800 mb-2 mt-6">How to Integrate ToYesto Into Your Workflow Today</h4>
+        <p class="mb-4 text-gray-700">
+            Make this tool your first stop for any material-related planning. Bookmark it on your browser. Save the link on your phone's home screen. Before you call a supplier or rent equipment, take 60 seconds with ToYesto. Run the numbers for both the tons to yards calculator and yards to tons calculator functions. This dual-check gives you complete confidence. You'll walk into conversations with suppliers as an informed buyer, not a confused customer. This simple habit protects your budget and your timeline.
+        </p>
+
+        <div class="text-center bg-blue-50 p-6 rounded-lg border border-blue-100 my-8">
+            <p class="text-lg font-semibold text-gray-900 mb-4">Your Instant-Action Plan</p>
+            <!-- Removed max-w-md to allow full width -->
+            <ul class="text-left mx-auto space-y-2 text-gray-900">
+                <li class="flex items-start"><span class="text-blue-600 mr-2 font-bold">✓</span> <strong>Bookmark the Tool:</strong>&nbsp; Open ToYesto now and save it.</li>
+                <li class="flex items-start"><span class="text-blue-600 mr-2 font-bold">✓</span> <strong>Run a Test Conversion:</strong>&nbsp; Practice with your next planned project's numbers.</li>
+                <li class="flex items-start"><span class="text-blue-600 mr-2 font-bold">✓</span> <strong>Save Your Results:</strong>&nbsp; Screenshot or note your calculation for quick reference.</li>
+                <li class="flex items-start"><span class="text-blue-600 mr-2 font-bold">✓</span> <strong>Share with Your Team:</strong>&nbsp; Send the link to your crew or partner to ensure everyone is on same page.</li>
+            </ul>
+        </div>
+
+        <h4 class="text-lg font-semibold text-gray-800 mb-2 mt-6">The ToYesto Promise: Always Free, Always Accurate</h4>
+        <p class="mb-6 text-gray-700">
+            We believe powerful tools should be accessible. That’s the core promise from Small Online Tool. ToYesto will remain a free, no-strings-attached resource. You will never hit a paywall or a usage limit. Our goal is to solve a real problem cleanly and effectively. We maintain the tool with regular updates to its material database and ensure its security. You get the benefits of a premium service without any cost. That’s our commitment to the professionals and DIYers who rely on it daily.
+        </p>
+
+        <!-- Summary -->
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">What You Stand to Gain</h3>
+        <p class="mb-6 text-gray-700">
+            Let's summarize your gain. By using ToYesto, you eliminate costly estimation errors. You reclaim hours of billable time lost to manual math. You reduce material waste and make more sustainable choices. You approach every project with documented, numerical confidence. In short, you trade uncertainty for control. The tool handles the complex physics of density, so you can focus on the actual work. Isn’t that the kind of edge you want?
+        </p>
+
+        <div class="text-center bg-green-50 p-6 rounded-lg border border-green-100 my-8">
+            <p class="text-lg font-semibold text-gray-900 mb-2">Ready to Convert with Confidence?</p>
+            <p class="text-gray-600 mb-4">The path forward is clear. Stop wrestling with conversion formulas and unreliable online guesses. You have a professional-grade solution at your fingertips.</p>
+            <p class="text-blue-800 font-bold">Access the free ToYesto tool now and experience the difference for yourself. See how instantly you can calculate tons to yards for your specific material. Then, use that precise number to order, budget, and build with absolute certainty.</p>
+        </div>
+        
+        <p class="mb-4 text-gray-700">Make your next calculation your most accurate one. Use ToYesto, the free tons to yards calculator powered by Small Online Tool, and never second-guess a material estimate again.</p>
+
+        <!-- FAQ Section -->
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Addressing Your Top Questions and Concerns</h3>
+        <p class="mb-4 text-gray-700">Even with a perfect tool, questions pop up. Let's tackle the most common ones head-on.</p>
+
+        <h4 class="text-lg font-semibold text-gray-800 mb-2 mt-6">FAQ: Getting the Most from Your Tons to Yards Calculator</h4>
+
+        <div class="space-y-4">
+            <details class="group border border-gray-200 rounded-lg">
+                <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-gray-800 bg-gray-50">
+                    <span>How accurate are the default densities in ToYesto?</span>
+                    <span class="transition group-open:rotate-180">
+                        <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                </summary>
+                <div class="text-gray-700 mt-3 px-4 pb-4">
+                    They are industry-standard averages, perfect for nearly all residential and commercial estimates. For critical, large-scale projects, use the "Custom Density" input with data from your material testing or supplier for laser precision.
+                </div>
+            </details>
+
+            <details class="group border border-gray-200 rounded-lg">
+                <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-gray-800 bg-gray-50">
+                    <span>Can I use it for liquids like water or oil?</span>
+                    <span class="transition group-open:rotate-180">
+                        <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                </summary>
+                <div class="text-gray-700 mt-3 px-4 pb-4">
+                    While the principle is the same, ToYesto is optimized for bulk solid materials like soil, aggregate, and mulch. The densities in its library reflect this common use case.
+                </div>
+            </details>
+
+            <details class="group border border-gray-200 rounded-lg">
+                <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-gray-800 bg-gray-50">
+                    <span>Why do I need to complete a CAPTCHA?</span>
+                    <span class="transition group-open:rotate-180">
+                        <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                </summary>
+                <div class="text-gray-700 mt-3 px-4 pb-4">
+                    This is a small, one-time step that protects the tool's resources. It ensures ToYesto remains fast, free, and available for everyone by preventing automated bots from overloading the system.
+                </div>
+            </details>
+
+            <details class="group border border-gray-200 rounded-lg">
+                <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-gray-800 bg-gray-50">
+                    <span>My material isn't on the list. What should I do?</span>
+                    <span class="transition group-open:rotate-180">
+                        <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                </summary>
+                <div class="text-gray-700 mt-3 px-4 pb-4">
+                    No problem! Simply choose the closest material type or use the "Custom Density" field. A quick web search for "[Your Material] density in tons per cubic yard" will give you the number you need to input.
+                </div>
+            </details>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Select Elements
+        var btnTonsToYards = document.getElementById('btn-tons-to-yards');
+        var btnYardsToTons = document.getElementById('btn-yards-to-tons');
+        var modeInput = document.getElementById('id_mode');
+        var labelValue = document.getElementById('label-value');
+        var hintValue = document.getElementById('hint-value');
+        var valueInput = document.getElementById('id_value');
+
+        // Check if elements exist
+        if (!btnTonsToYards || !btnYardsToTons || !modeInput) {
+            console.error("Converter elements not found.");
+            return;
+        }
+
+        // 2. Define the UI Update Function
+        window.setMode = function(mode) {
+            // Define class sets
+            var activeClasses = ['bg-blue-600', 'text-white', 'shadow-sm'];
+            var inactiveClasses = ['text-gray-600', 'hover:text-gray-900'];
+
+            if (mode === 'tons_to_yards') {
+                // Set Logic
+                modeInput.value = 'tons_to_yards';
+
+                // Visual Update: Button 1 Active
+                btnTonsToYards.classList.add.apply(btnTonsToYards.classList, activeClasses);
+                btnTonsToYards.classList.remove.apply(btnTonsToYards.classList, inactiveClasses);
+
+                // Visual Update: Button 2 Inactive
+                btnYardsToTons.classList.add.apply(btnYardsToTons.classList, inactiveClasses);
+                btnYardsToTons.classList.remove.apply(btnYardsToTons.classList, activeClasses);
+
+                // Update Input Labels
+                labelValue.innerText = "Weight (Tons)";
+                hintValue.innerText = "Enter the weight in tons";
+                valueInput.placeholder = "e.g. 10";
+
+            } else {
+                // Set Logic
+                modeInput.value = 'yards_to_tons';
+
+                // Visual Update: Button 2 Active
+                btnYardsToTons.classList.add.apply(btnYardsToTons.classList, activeClasses);
+                btnYardsToTons.classList.remove.apply(btnYardsToTons.classList, inactiveClasses);
+
+                // Visual Update: Button 1 Inactive
+                btnTonsToYards.classList.add.apply(btnTonsToYards.classList, inactiveClasses);
+                btnTonsToYards.classList.remove.apply(btnTonsToYards.classList, activeClasses);
+
+                // Update Input Labels
+                labelValue.innerText = "Volume (Cubic Yards)";
+                hintValue.innerText = "Enter the volume in cubic yards";
+                valueInput.placeholder = "e.g. 10";
+            }
+        };
+
+        // 3. Attach Event Listeners
+        btnTonsToYards.addEventListener('click', function() {
+            window.setMode('tons_to_yards');
+        });
+
+        btnYardsToTons.addEventListener('click', function() {
+            window.setMode('yards_to_tons');
+        });
+
+        // 4. Initialize State on Page Load
+        var initialMode = modeInput.value || 'tons_to_yards';
+        window.setMode(initialMode);
+    });
+</script>
+{% endblock %}

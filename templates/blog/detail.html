@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+    
+    <!-- FEATURED IMAGE (Top of Detail Page) -->
+    {% if post.featured_image %}
+        <div class="mb-8 rounded-lg overflow-hidden h-64 md:h-96">
+            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover">
+        </div>
+    {% endif %}
+
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ post.title }}</h1>
+    
+    <div class="flex items-center text-sm text-gray-500 mb-8">
+        <span>{{ post.created_at|date:"F d, Y" }}</span>
+    </div>
+
+    <!-- CONTENT (Includes images inserted via TinyMCE) -->
+    <div class="prose max-w-none text-gray-700">
+        {{ post.content|safe }}
+    </div>
+</div>
+{% endblock %}

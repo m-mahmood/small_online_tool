@@ -1,0 +1,522 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Small Online Tools{% endblock %}</title>
+    
+    <!-- Load the custom tag library -->
+    {% load seo_tags %}
+    
+    <!-- HERE: Render the SEO Scripts (Analytics, Verification, AdSense) -->
+    {% seo_scripts %}
+       
+    <!-- Tailwind CSS (With Typography Plugin) -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    
+    <!-- Bootstrap CSS (Required for Modals) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{% static 'image/favicon.svg' %}">
+  
+    <script>
+    <!-- MAIN LOGIC SCRIPT -->
+        
+    </script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans min-h-screen flex flex-col">
+    <!-- Bait Content -->
+    <div id="adblock-bait"
+         class="adsbygoogle ad-banner adsbox banner-ads textAds pub_300x250"
+         style="
+            width: 300px;
+            height: 250px;
+            position: absolute;
+            top: 10px;
+            left: -9999px;
+            background: #f5f5f5;
+            z-index: -1;
+            pointer-events: none;
+         ">
+        <!-- Bait Content -->
+    </div>
+    <!-- ========================================== -->
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="/" class="flex items-center">
+                        <i class="fa-solid fa-gear text-blue-600 text-2xl mr-2"></i>
+                        <span class="font-bold text-xl text-gray-900 tracking-tight">Small Online Tool</span>
+                    </a>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <!-- Tools Dropdown -->
+                    <div class="relative" id="tools-dropdown-container">
+                        <button id="tools-dropdown-btn" class="text-gray-600 hover:text-blue-600 font-medium flex items-center focus:outline-none">
+                            Tools <i class="fa-solid fa-chevron-down text-xs ml-1 transition-transform" id="tools-chevron"></i>
+                        </button>
+                        <div id="tools-menu" class="hidden absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 border border-gray-100 z-50">
+                            <a href="/grass/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Artificial Grass</a>
+                            <a href="/bark/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Bark Calculator</a>
+                            <a href="/tons/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Tons to Yards</a>
+                        </div>
+                    </div>
+                    
+                    <a href="/blog/" class="text-gray-600 hover:text-blue-600 font-medium">Blogs</a>
+                    <a href="/contact/" class="text-gray-600 hover:text-blue-600 font-medium">Contact us</a>
+                </div>
+
+                <!-- Mobile Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-gray-900">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <div class="relative" id="mobile-tools-container">
+                <button id="mobile-tools-btn" class="w-full text-left px-4 py-2 text-gray-700 flex justify-between items-center hover:bg-gray-50">
+                    Tools <i class="fa-solid fa-chevron-down text-xs"></i>
+                </button>
+                <div id="mobile-tools-menu" class="hidden bg-gray-50">
+                    <a href="/grass/" class="block px-8 py-2 text-sm text-gray-700 border-b">Artificial Grass</a>
+                    <a href="/bark/" class="block px-8 py-2 text-sm text-gray-700 border-b">Bark Calculator</a>
+                    <a href="/tons/" class="block px-8 py-2 text-sm text-gray-700">Tons to Yards</a>
+                </div>
+            </div>
+            <a href="/blog/" class="block px-4 py-2 text-gray-700 border-b hover:bg-gray-50">Blogs</a>
+            <a href="/contact/" class="block px-4 py-2 text-gray-700 hover:bg-gray-50">Contact us</a>
+        </div>
+    </nav>
+
+    <!-- POPUPS MODALS SECTION -->
+    {% for popup in popup_data %}
+        
+        {# 1. ADBLOCK WARNING #}
+        {% if popup.name == 'AdBlock Warning' %}
+            {% include 'popups/adblock_warning.html' %}
+        {% endif %}
+
+        {# 2. EXIT INTENT #}
+        {% if popup.name == 'Exit Intent' and popup.is_active %}
+            {% include 'popups/exit_intent.html' %}
+        {% endif %}
+
+        {# 3. GENERAL EMAIL COLLECTOR #}
+        {% if popup.name == 'Email Collector' and popup.is_active %}
+            <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true" data-bs-backdrop="static">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content shadow-lg border-t-4 border-blue-500">
+                        <div class="modal-header bg-blue-50 border-b border-blue-100">
+                            <h5 class="modal-title text-gray-900 font-bold text-xl" id="emailModalLabel">
+                                {{ popup.title|default:"Stay Updated" }}
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            {% if popup.image %}
+                                <div class="mb-4 text-center">
+                                    <img src="{{ popup.image.url }}" alt="Banner" class="img-fluid rounded">
+                                </div>
+                            {% else %}
+                                <p class="mb-4 text-gray-600 text-center">
+                                    Join our newsletter to get the latest tool updates and exclusive offers.
+                                </p>
+                            {% endif %}
+
+                            <form id="popup-form-{{ popup.id }}"
+                                  action="/popups/process-subscription/"
+                                  method="POST"
+                                  class="space-y-4">
+                                {% csrf_token %}
+                                <input type="hidden" name="popup_id" value="{{ popup.id }}">
+
+                                {% if popup.show_name %}
+                                    <input type="text" name="name"
+                                           placeholder="Your Name"
+                                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                                {% endif %}
+
+                                <input type="email" name="email" required
+                                       placeholder="Your Email"
+                                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+
+                                {% if popup.show_desc %}
+                                    <div class="text-sm text-gray-500 bg-gray-50 p-2 rounded">
+                                        {{ popup.content|safe }}
+                                    </div>
+                                {% endif %}
+
+                                {% if popup.show_checkbox %}
+                                    <label class="flex items-start space-x-3 mt-2 cursor-pointer">
+                                        <input type="checkbox" name="hide_email" class="mt-1">
+                                        <span class="text-xs text-gray-500">
+                                            Don't show this popup again
+                                        </span>
+                                    </label>
+                                {% endif %}
+
+                                <button type="submit"
+                                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition duration-200">
+                                    Subscribe
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+
+    <!-- TOP BAR AD -->
+    {% if top_bar_ad %}
+    <div class="w-full bg-gray-100 py-4">
+        <div class="max-w-7xl mx-auto px-4">
+            {% if top_bar_ad.link %}
+                <a href="{{ top_bar_ad.link }}" target="_blank">
+                    <img src="{{ top_bar_ad.get_image_url }}" alt="{{ top_bar_ad.name }}" class="w-full h-auto object-cover rounded shadow-sm hover:opacity-90 transition">
+                </a>
+            {% else %}
+                <img src="{{ top_bar_ad.get_image_url }}" alt="{{ top_bar_ad.name }}" class="w-full h-auto object-cover rounded shadow-sm">
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Main Content Wrapper -->
+    <div class="flex-grow flex flex-col lg:flex-row max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 gap-4">
+        
+        <!-- LEFT COLUMN: Left Bar Ad -->
+        {% if left_bar_ad %}
+            <aside class="hidden lg:block flex-shrink-0 w-64">
+                <div class="sticky top-24">
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                        {% if left_bar_ad.link %}
+                            <a href="{{ left_bar_ad.link }}" target="_blank">
+                                <img src="{{ left_bar_ad.get_image_url }}" alt="{{ left_bar_ad.name }}" class="w-full h-auto object-cover hover:opacity-90 transition">
+                            </a>
+                        {% else %}
+                            <img src="{{ left_bar_ad.get_image_url }}" alt="{{ left_bar_ad.name }}" class="w-full h-auto object-cover">
+                        {% endif %}
+                    </div>
+                </div>
+            </aside>
+        {% endif %}
+
+        <!-- MIDDLE COLUMN: Page Content -->
+        <main class="flex-grow w-full">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- RIGHT COLUMN: Sidebar -->
+        <aside class="hidden lg:block flex-shrink-0 w-80">
+            <div class="sticky top-24 flex flex-col gap-4">
+                
+                <!-- SIDEBAR TOP AD -->
+                {% if sidebar_top_ad %}
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                        {% if sidebar_top_ad.link %}
+                            <a href="{{ sidebar_top_ad.link }}" target="_blank">
+                                <img src="{{ sidebar_top_ad.get_image_url }}" alt="{{ sidebar_top_ad.name }}" class="w-full h-auto object-cover hover:opacity-90 transition">
+                            </a>
+                        {% else %}
+                            <img src="{{ sidebar_top_ad.get_image_url }}" alt="{{ sidebar_top_ad.name }}" class="w-full h-auto object-cover">
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <!-- TOOLS LIST -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                    <h3 class="font-bold text-gray-900 border-b pb-2 mb-3">All Tools</h3>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li><a href="/grass/" class="flex items-center hover:text-blue-600 hover:translate-x-1 transition"><i class="fa-solid fa-leaf w-5 text-green-500"></i> Artificial Grass Calc</a></li>
+                        <li><a href="/bark/" class="flex items-center hover:text-blue-600 hover:translate-x-1 transition"><i class="fa-solid fa-tree w-5 text-amber-600"></i> Bark Calculator</a></li>
+                        <li><a href="/tons/" class="flex items-center hover:text-blue-600 hover:translate-x-1 transition"><i class="fa-solid fa-weight-hanging w-5 text-blue-600"></i> Tons to Yards</a></li>
+                    </ul>
+                </div>
+
+                <!-- LATEST BLOG POSTS -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                    <h3 class="font-bold text-gray-900 border-b pb-2 mb-3">Latest Blogs</h3>
+                    <ul class="space-y-4">
+                        {% for post in latest_posts %}
+                            <li class="group cursor-pointer">
+                                <a href="/blog/{{ post.slug }}/" class="block text-sm font-medium text-gray-900 group-hover:text-blue-600 transition">
+                                    {{ post.title }}
+                                </a>
+                                <span class="text-xs text-gray-500">{{ post.created_at|date:"M d, Y" }}</span>
+                            </li>
+                        {% empty %}
+                            <li class="text-sm text-gray-500">No posts available yet.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- BOTTOM BAR AD -->
+    {% if bottom_bar_ad %}
+    <div class="w-full bg-gray-100 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4">
+            {% if bottom_bar_ad.link %}
+                <a href="{{ bottom_bar_ad.link }}" target="_blank">
+                    <img src="{{ bottom_bar_ad.get_image_url }}" alt="{{ bottom_bar_ad.name }}" class="w-full h-auto object-cover rounded shadow-sm hover:opacity-90 transition">
+                </a>
+            {% else %}
+                <img src="{{ bottom_bar_ad.get_image_url }}" alt="{{ bottom_bar_ad.name }}" class="w-full h-auto object-cover rounded shadow-sm">
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div>
+                <h5 class="text-white font-bold mb-3">Small Online Tool</h5>
+                <p>&copy; 2024 Small Online Tool. All rights reserved.</p>
+            </div>
+            <div>
+                <h5 class="text-white font-bold mb-3">Quick Links</h5>
+                <ul class="space-y-1">
+                    <li><a href="/" class="hover:text-white">Home</a></li>
+                    <li><a href="/blog/" class="hover:text-white">Blogs</a></li>
+                    <li><a href="/contact/" class="hover:text-white">Contact us</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-white font-bold mb-3">Legal</h5>
+                <ul class="space-y-1">
+                    <li><a href="/privacy/" class="hover:text-white">Privacy Policy</a></li>
+                    <li><a href="/terms/" class="hover:text-white">Terms & Conditions</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- MAIN LOGIC SCRIPT -->
+    <script>
+        // --- CONFIGURATION ---
+        window.popups_settings = window.popups_settings || {
+            enable_adblock_warning: true, 
+            enable_exit_intent: true,
+            enable_email_collector: true,
+            email_delay: 15,
+            email_show_page_path: ""
+        };
+
+        // --- 1. ROBUST ADBLOCK EXTENSION DETECTION ---
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+
+                if (typeof bootstrap === 'undefined') {
+                    console.error("Bootstrap JS not loaded. Popups disabled.");
+                    return;
+                }
+
+                if (!window.popups_settings || !window.popups_settings.enable_adblock_warning) {
+                    return;
+                }
+
+                const bait = document.getElementById('adblock-bait');
+                let adBlockDetected = false;
+
+                if (!bait) {
+                    adBlockDetected = true;
+                    console.warn("AdBlock detected: Bait element removed");
+                } else {
+                    const style = window.getComputedStyle(bait);
+
+                    if (
+                        style.display === 'none' ||
+                        style.visibility === 'hidden' ||
+                        bait.offsetHeight === 0 ||
+                        bait.offsetWidth === 0
+                    ) {
+                        adBlockDetected = true;
+                        console.warn("AdBlock detected: Bait hidden via CSS (display/visibility/offset)");
+                    }
+                }
+
+                if (adBlockDetected) {
+                    const modalEl = document.getElementById('adblockModal');
+                    if (modalEl) {
+                        const modal = new bootstrap.Modal(modalEl, {
+                            backdrop: 'static',
+                            keyboard: false
+                        });
+                        modal.show();
+                    } else {
+                        console.error("AdBlock detected, but #adblockModal not found in HTML.");
+                    }
+                }
+
+            }, 1200); 
+        });
+
+        // --- 2. EXIT INTENT DETECTION ---
+        let exitIntentShown = false;
+        document.addEventListener('mouseleave', function(e) {
+            if (typeof popups_settings !== 'undefined' && 
+                popups_settings.enable_exit_intent && 
+                !exitIntentShown &&
+                !sessionStorage.getItem('exitIntentShown')) {
+                
+                if (e.clientY <= 0) {
+                    console.log("Exit intent triggered.");
+                    exitIntentShown = true;
+                    sessionStorage.setItem('exitIntentShown', 'true');
+                    
+                    const modalEl = document.getElementById('exitIntentModal');
+                    if (modalEl) {
+                        const exitModal = new bootstrap.Modal(modalEl);
+                        exitModal.show();
+                    }
+                }
+            }
+        });
+
+        // --- 3. AUTOMATIC EMAIL COLLECTOR ---
+        window.addEventListener('load', function() {
+            if (typeof popups_settings !== 'undefined' && popups_settings.enable_email_collector) {
+                
+                if (sessionStorage.getItem('emailCollectorShown')) return;
+
+                const currentPath = window.location.pathname; 
+                const targetPages = popups_settings.email_show_page_path; 
+                const delay = popups_settings.email_delay || 15; 
+
+                let shouldTrigger = false;
+
+                if (targetPages && targetPages.trim() !== "") {
+                    const targets = targetPages.split(',').map(t => t.trim().toLowerCase());
+                    shouldTrigger = targets.some(target => currentPath.includes('/' + target));
+                    console.log("Email Popup: Page match.", {path: currentPath, targets, match: shouldTrigger});
+                } else {
+                    shouldTrigger = true; 
+                }
+
+                if (shouldTrigger) {
+                    const showDelay = (targetPages && shouldTrigger) ? 1000 : delay * 1000;
+
+                    setTimeout(function() {
+                        const modalEl = document.getElementById('emailModal');
+                        if (modalEl) {
+                            const myModal = new bootstrap.Modal(modalEl);
+                            myModal.show();
+                            sessionStorage.setItem('emailCollectorShown', 'true');
+                        }
+                    }, showDelay);
+                }
+            }
+        });
+
+        // --- 4. FORM SUBMISSION HANDLING (AJAX) ---
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (this.id && (this.id.startsWith('popup-form') || this.id === 'newsletter-form' || this.id === 'exit-intent-form')) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerText;
+                    
+                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+                    submitBtn.disabled = true;
+
+                    fetch('/popups/process-subscription/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            this.innerHTML = `
+                                <div class="text-center py-4">
+                                    <i class="fa-solid fa-check-circle text-5xl text-green-500 mb-3"></i>
+                                    <h4 class="text-xl font-bold text-gray-900">Success!</h4>
+                                    <p class="text-gray-600">${data.message}</p>
+                                    <button class="mt-4 text-blue-600 hover:text-blue-800 underline" onclick="bootstrap.Modal.getInstance(this.closest('.modal')).hide()">Close</button>
+                                </div>
+                            `;
+                        } else {
+                            alert(data.message || 'Error submitting form');
+                            submitBtn.innerText = originalText;
+                            submitBtn.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Something went wrong. Please try again.');
+                        submitBtn.innerText = originalText;
+                        submitBtn.disabled = false;
+                    });
+                }
+            });
+        });
+
+        // --- 5. UI TOGGLES (Mobile Menu, Dropdowns) ---
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        }
+
+        const toolsBtn = document.getElementById('tools-dropdown-btn');
+        const toolsMenu = document.getElementById('tools-menu');
+        const toolsChevron = document.getElementById('tools-chevron');
+        if (toolsBtn && toolsMenu) {
+            toolsBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                toolsMenu.classList.toggle('hidden');
+                if(toolsMenu.classList.contains('hidden')){
+                    toolsChevron.style.transform = 'rotate(0deg)';
+                } else {
+                    toolsChevron.style.transform = 'rotate(180deg)';
+                }
+            });
+            window.addEventListener('click', () => {
+                if (!toolsMenu.classList.contains('hidden')) {
+                    toolsMenu.classList.add('hidden');
+                    toolsChevron.style.transform = 'rotate(0deg)';
+                }
+            });
+        }
+
+        const mobileToolsBtn = document.getElementById('mobile-tools-btn');
+        const mobileToolsMenu = document.getElementById('mobile-tools-menu');
+        if (mobileToolsBtn && mobileToolsMenu) {
+            mobileToolsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileToolsMenu.classList.toggle('hidden');
+            });
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
