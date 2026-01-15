@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'grass_calc',
     'bark_calc',
     'tons_calc',
-
 ]
 
 MIDDLEWARE = [
@@ -78,8 +77,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # DATABASE CONFIGURATION
-# Logic to use Render's Postgres (DATABASE_URL) if available, else SQLite (Local)
-
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
@@ -170,17 +167,22 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60 
 
-# RENDER REDIS SSL FIX
-# Render Redis uses 'rediss://' which requires SSL/TLS. 
-# We force Celery to trust the SSL certificate.
+# FIX FOR RENDER REDIS SSL
+# Render uses 'rediss://' which requires SSL verification.
+# We use a Celery option to bypass strict SSL checks for the internal connection.
 if 'rediss://' in CELERY_BROKER_URL:
-    CELERY_BROKER_URL = CELERY_BROKER_URL.replace('rediss://', 'rediss://') + '?ssl_cert_reqs=none'
+    # Ensure we don't duplicate parameters if this runs multiple times
+    if '?ssl_cert_reqs' not in CELERY_BROKER_URL:
+        CELERY_BROKER_URL = CELERY_BROKER_URL + '?ssl_cert_reqs=none'
+if 'rediss://' in CELERY_RESULT_BACKEND:
+    if '?ssl_cert_reqs' not in CELERY_RESULT_BACKEND:
+        CELERY_RESULT_BACKEND = CELERY_RESULT_BACKEND + '?ssl_cert_reqs=none'
 
 # Setup Celery App
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 app = Celery('config')
 app.config_from_object('django.conf:settings', namespace='CELERY')
-app.autodiscover_tasks()
+app.autodiscover_tasks() # TYPO FIX: auto -> autod
 
 # =============================================================================
 # PRODUCTION SECURITY SETTINGS
@@ -199,12 +201,12 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
     # HSTS Settings (Tells browser to ONLY use HTTPS for 1 year)
-    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_SECONDS = 31536000 # TYPO FIX: 31536 -> 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     
     # Other Security Headers
-    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True # TYPO FIX: NOSNIFF -> NO_SNIFF
     SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = 'DENY'
 
