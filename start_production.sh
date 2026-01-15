@@ -9,7 +9,7 @@ python manage.py collectstatic --noinput
 
 # 3. Start Celery (Background Task) using Detach
 # The '--detach' flag stops Celery from taking over the console immediately
-celery -A config worker -l info --detach || echo "Celery start failed, continuing..."
+celery -A config worker -l info &
 
 # 4. Start Gunicorn (Web Server) in the Foreground
 # This keeps the app "alive" for Render
