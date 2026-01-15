@@ -10,15 +10,12 @@
     <!-- Alert Container (Hidden by default) -->
     <div id="formAlert" class="hidden p-3 rounded mb-4 border"></div>
     
-    <!-- Note: I removed the Django messages block because we are handling feedback via JS -->
-    
-    <!-- Added ID to form -->
+    <!-- Form -->
     <form id="contactForm" method="post">
         {% csrf_token %}
         <div class="space-y-4">
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2">Name</label>
-                <!-- Added class for JS styling errors -->
                 <input type="text" name="name" id="id_name" 
                        class="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-sky-500 outline-none"
                        value="{{ form.name.value|default:'' }}">
@@ -50,6 +47,37 @@
 
 {% block scripts %}
 <script>
+// 1. RECAPTCHA RESPONSIVE FIX
+// This function scales the reCAPTCHA widget to fit small mobile screens
+function resizeRecaptcha() {
+    if (typeof grecaptcha !== 'undefined') {
+        const recaptchaContainer = document.querySelector('#recaptcha-container') || document.querySelector('.g-recaptcha');
+        if (recaptchaContainer) {
+            const width = recaptchaContainer.offsetWidth;
+            // If the screen is smaller than 300px (iPhone SE, etc), scale it down
+            if (width < 302) {
+                const scale = width / 302;
+                grecaptcha.getResponse(); // Trigger recaptcha to load if needed
+                document.querySelectorAll('.g-recaptcha').forEach(el => {
+                    el.style.transform = `scale(${scale})`;
+                    el.style.transformOrigin = 'left';
+                });
+            } else {
+                // Reset scale on desktop
+                document.querySelectorAll('.g-recaptcha').forEach(el => {
+                    el.style.transform = 'none';
+                });
+            }
+        }
+    }
+}
+
+// Run fix on load and on resize
+window.addEventListener('load', resizeRecaptcha);
+window.addEventListener('resize', resizeRecaptcha);
+
+
+// 2. FORM SUBMISSION LOGIC
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('contactForm');
     const submitBtn = document.getElementById('submitBtn');
@@ -85,22 +113,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .then(response => {
-            if (!response.ok) {
-                return response.json().then(data => { throw data; });
+            // Check Content-Type to ensure we get JSON, not HTML error page
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                return response.json();
+            } else {
+                // If it's HTML/Text, throw an error to handle in catch
+                return response.text().then(text => {
+                    throw new Error("Server Error: Response was not JSON.");
+                });
             }
-            return response.json();
         })
         .then(data => {
             // Success
             if (data.status === 'success') {
                 alertBox.textContent = data.message;
-                alertBox.className = "bg-green-100 text-green-700 p-3 rounded mb-4 border border-green-200"; // Your success style
+                alertBox.className = "bg-green-100 text-green-700 p-3 rounded mb-4 border border-green-200";
                 
                 // Reset form and Recaptcha
                 form.reset();
                 if (typeof grecaptcha !== 'undefined') {
                     grecaptcha.reset();
+                    // Run resize again just in case reset broke styles
+                    resizeRecaptcha();
                 }
+            } else if (data.status === 'error') {
+                // Handle logical server errors (e.g., SMTP failure)
+                throw data;
             }
         })
         .catch(data => {
@@ -108,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let errorMessage = "Something went wrong. Please try again.";
             
             if (data.errors) {
-                // Format Django errors
+                // Django Validation Errors
                 errorMessage = '<strong>Please fix the following errors:</strong><ul class="list-disc pl-5 mt-2">';
                 for (const [field, errors] of Object.entries(data.errors)) {
                     errors.forEach(err => {
@@ -117,11 +156,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 errorMessage += '</ul>';
             } else if (data.message) {
+                // Server/Python Exception Error
+                errorMessage = data.message;
+            } else if (data instanceof Error) {
+                // Front-end Fetch Error
                 errorMessage = data.message;
             }
 
             alertBox.innerHTML = errorMessage;
-            alertBox.className = "bg-red-100 text-red-700 p-3 rounded mb-4 border border-red-200"; // Error style
+            alertBox.className = "bg-red-100 text-red-700 p-3 rounded mb-4 border border-red-200";
         })
         .finally(() => {
             // Reset Button
