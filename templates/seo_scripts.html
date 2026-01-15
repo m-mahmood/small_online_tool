@@ -2,29 +2,23 @@
 
 <!-- 1. GOOGLE SEARCH CONSOLE (VERIFICATION) -->
 {% if GOOGLE_SITE_VERIFICATION %}
-    <!-- The meta tag is always rendered if the key exists -->
     <meta name="google-site-verification" content="{{ GOOGLE_SITE_VERIFICATION }}" />
 {% endif %}
 
 <!-- 2. GOOGLE ANALYTICS (GA4) -->
 {% if GOOGLE_ANALYTICS_ID %}
-    <!-- Only load GA if DEBUG is False (Production) -->
-    {% if not debug %}
-        <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '{{ GOOGLE_ANALYTICS_ID }}');
-        </script>
-    {% endif %}
+    <!-- FORCING LOAD: Removed {% if not debug %} check for testing -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ GOOGLE_ANALYTICS_ID }}');
+    </script>
 {% endif %}
 
 <!-- 3. GOOGLE ADSENSE (AUTO ADS) -->
 {% if GOOGLE_ADSENSE_CLIENT_ID %}
-    <!-- Only load AdSense if DEBUG is False -->
-    {% if not debug %}
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ GOOGLE_ADSENSE_CLIENT_ID }}" crossorigin="anonymous"></script>
-    {% endif %}
+    <!-- FORCING LOAD: Removed {% if not debug %} check for testing -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ GOOGLE_ADSENSE_CLIENT_ID }}" crossorigin="anonymous"></script>
 {% endif %}
