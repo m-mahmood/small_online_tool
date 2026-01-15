@@ -10,9 +10,9 @@ def contact_view(request):
             cd = form.cleaned_data
             
             # Use .delay() for production, .call() for local testing if Redis is off
-            send_contact_email.delay(cd['name'], cd['email'], cd['message'])
+            # send_contact_email.delay(cd['name'], cd['email'], cd['message'])
 
-            # send_contact_email(cd['name'], cd['email'], cd['message'])
+            send_contact_email(cd['name'], cd['email'], cd['message'])
             
             # Return JSON success instead of rendering a page
             return JsonResponse({'status': 'success', 'message': 'Your message has been sent successfully!'})
