@@ -1,15 +1,16 @@
 #!/bin/bash
 set -e
 
-# 1. Migrations
+# 1. Run Migrations
 python manage.py migrate --noinput
 
-# 2. Collect Static
+# 2. Collect Static Files
 python manage.py collectstatic --noinput
 
-# 3. Start Celery (Background)
-# The '&& echo' part prevents the script from crashing if Celery has a minor hiccup
-celery -A config worker -l info --detach || echo "Celery failed to detach, starting Gunicorn..."
+# 3. Start Celery (Worker) in the Background
+# --detach ensures Gunicorn can start afterwards
+celery -A config worker -l info --detach
 
-# 4. Start Gunicorn (Web Server)
+# 4. Start Gunicorn (Web Server) in the Foreground
+# This keeps the app "alive"
 gunicorn config.wsgi:application

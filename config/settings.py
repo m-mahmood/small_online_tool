@@ -162,12 +162,19 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # CELERY CONFIGURATION
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
 CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60 
+
+# RENDER REDIS SSL FIX
+# Render Redis uses 'rediss://' which requires SSL/TLS. 
+# We force Celery to trust the SSL certificate.
+if 'rediss://' in CELERY_BROKER_URL:
+    CELERY_BROKER_URL = CELERY_BROKER_URL.replace('rediss://', 'rediss://') + '?ssl_cert_reqs=none'
 
 # Setup Celery App
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
